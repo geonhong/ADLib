@@ -1,0 +1,6 @@
+incompressible = TurbulenceModels/incompressible
+turbulenceModels = TurbulenceModels/turbulenceModels
+
+$(incompressible)/turbulentTransportModels/turbulentTransportModels.C
+
+LIB = $(FOAM_USER_LIBBIN)/libADLib

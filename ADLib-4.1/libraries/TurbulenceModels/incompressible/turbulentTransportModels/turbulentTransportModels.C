@@ -34,6 +34,15 @@ License
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+makeBaseTurbulenceModel
+(
+    geometricOneField,
+    geometricOneField,
+    incompressibleTurbulenceModel,
+    IncompressibleTurbulenceModel,
+    transportModel
+);
+
 #define makeRASModel(Type)                                                     \
     makeTemplatedTurbulenceModel                                               \
     (transportModelIncompressibleTurbulenceModel, RAS, Type)
@@ -47,8 +56,8 @@ License
 // RAS models
 // -------------------------------------------------------------------------- //
 
-// #include "SpalartAllmaras.H"
-// makeRASModel(SpalartAllmaras);
+#include "LLEASM.H"
+makeRASModel(LLEASM);
 
 // -------------------------------------------------------------------------- //
 // LES models
