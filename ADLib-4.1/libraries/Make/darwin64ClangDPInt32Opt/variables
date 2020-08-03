@@ -1,3 +1,0 @@
-incompressible = TurbulenceModels/incompressible
-turbulenceModels = TurbulenceModels/turbulenceModels
-LIB = $(FOAM_USER_LIBBIN)/libADLib
