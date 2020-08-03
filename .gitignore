@@ -1,0 +1,4 @@
+# ignore compile files
+darwin64*
+linux64*
+*.dep
