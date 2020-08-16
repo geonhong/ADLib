@@ -11,4 +11,5 @@ LIB_LIBS = \
 	-lfiniteVolume \
 	-lmeshTools \
 	-lfvOptions \
+	-L$(FOAM_USER_LIBBIN) -lKPA \
 	-lturbulenceModels
