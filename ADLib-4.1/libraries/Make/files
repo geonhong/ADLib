@@ -1,6 +1,8 @@
 incompressible = TurbulenceModels/incompressible
 turbulenceModels = TurbulenceModels/turbulenceModels
 
-$(incompressible)/turbulentTransportModels/turbulentTransportModels.C
+/* $(incompressible)/turbulentTransportModels/turbulentTransportModels.C */
+
+fvOptions/KPASource.C
 
 LIB = $(FOAM_USER_LIBBIN)/libADLib

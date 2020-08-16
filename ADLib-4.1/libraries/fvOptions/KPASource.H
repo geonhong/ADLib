@@ -258,6 +258,9 @@ public:
 
 		// IO
 
+			//- Write data
+			void writeData(Ostream& os) const;
+
 			//- Read dictionary
 			virtual bool read(const dictionary& dict);
 };

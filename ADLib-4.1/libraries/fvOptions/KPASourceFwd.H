@@ -159,8 +159,8 @@ public:
 		const point yz(const label& iR, const label& iQ)
 		{
 			const scalar arg(Q_[iQ]*pi/180.0);
-			const scalar y(R_[iR]*Foam::cos(arg);
-			const scalar z(R_[iR]*Foam::sin(arg);
+			const scalar y(R_[iR]*Foam::cos(arg));
+			const scalar z(R_[iR]*Foam::sin(arg));
 
 			return point(0.0, y, z);
 		}
@@ -310,3 +310,6 @@ public:
 			return iV_;
 		}
 };
+
+} // End namespace fv
+} // End namespace Foam
