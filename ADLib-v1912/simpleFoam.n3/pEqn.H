@@ -45,10 +45,13 @@
     #include "continuityErrs.H"
 
     // Explicitly relax pressure for momentum corrector
-    p.relax();
+    // p.relax();
 
     // Momentum corrector
     U = HbyA - rAtU()*fvc::grad(p);
     U.correctBoundaryConditions();
     fvOptions.correct(U);
+	
+    // Explicitly relax pressure for momentum corrector
+    p.relax();
 }

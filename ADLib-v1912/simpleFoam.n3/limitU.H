@@ -25,7 +25,7 @@ void limitU(volVectorField& U, const solutionControl& control)
 		U.correctBoundaryConditions();
 
 		scalar maxMagU(max(mag(U)).value());
-		reduce(maxMagU, sumOp<scalar>());
+		reduce(maxMagU, maxOp<scalar>());
 
 		Info<< "...clipping : max(U) = " << maxMagU;
 	}
