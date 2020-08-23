@@ -2,3 +2,4 @@
 darwin64*
 linux64*
 *.dep
+log
