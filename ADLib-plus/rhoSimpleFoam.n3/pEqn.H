@@ -84,12 +84,12 @@ else
 
 #include "incompressible/continuityErrs.H"
 
-// Explicitly relax pressure for momentum corrector
-p.relax();
-
 U = HbyA - rAU*fvc::grad(p);
 U.correctBoundaryConditions();
 fvOptions.correct(U);
+
+// Explicitly relax pressure for momentum corrector
+p.relax();
 
 bool pLimited = pressureControl.limit(p);
 
