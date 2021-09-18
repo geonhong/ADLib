@@ -222,6 +222,8 @@
             );
         }
 
+		alpha1 = min(1.2, max(-0.2, alpha1));
+
         alpha2 = 1.0 - alpha1;
 
         mixture.correct();
