@@ -51,6 +51,8 @@ Description
 #include "CorrectPhi.H"
 #include "fvcSmooth.H"
 
+#include "gaussConvectionScheme.H"
+#include "upwind.H"
 #include "limitU.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

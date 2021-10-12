@@ -222,7 +222,7 @@
             );
         }
 
-		alpha1 = min(1.2, max(-0.2, alpha1));
+		// alpha1 = min(1.2, max(-0.2, alpha1));
 
         alpha2 = 1.0 - alpha1;
 
@@ -240,6 +240,19 @@
     }
 
     #include "rhofs.H"
+
+	//-----------------------------------------------------------------------------
+	// Explicitly limit the alphaPhi and alpha
+	Switch fluxLimiter
+	(
+		pimple.dict().lookupOrDefault<Switch>("fluxLimiter", "off")
+	);
+
+	if (fluxLimiter)
+	{
+	 	#include "limitAlpha.H"
+	}
+	//-----------------------------------------------------------------------------
 
     if
     (

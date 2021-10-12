@@ -2,12 +2,46 @@
 
     fvVectorMatrix UEqn
     (
-        fvm::ddt(rho, U) + fvm::div(rhoPhi, U)
+        fvm::ddt(rho, U) 
+	  // + fvm::div(rhoPhi, U)
       + MRF.DDt(rho, U)
       + turbulence->divDevRhoReff(rho, U)
      ==
         fvOptions(rho, U)
     );
+
+	//-----------------------------------------------------------------------------
+	// deferred correction
+	Switch deferredCorr
+	(
+		pimple.dict().lookupOrDefault<Switch>("deferredCorr", "off")
+	);
+
+	if (deferredCorr)
+	{
+		UEqn +=
+		(
+			fv::gaussConvectionScheme<vector>
+			(
+				mesh,
+				rhoPhi,
+				upwind<vector>(mesh, rhoPhi)
+			).fvmDiv(rhoPhi, U)
+		 ==
+			fv::gaussConvectionScheme<vector>
+			(
+				mesh,
+				rhoPhi,
+				upwind<vector>(mesh, rhoPhi)
+			).fvcDiv(rhoPhi, U)
+		  - fvc::div(rhoPhi,U)
+		);
+	}
+	else
+	{
+		UEqn += fvm::div(rhoPhi, U);
+	}
+	//-----------------------------------------------------------------------------
 
 	if (pimple.finalIter())
 	{
