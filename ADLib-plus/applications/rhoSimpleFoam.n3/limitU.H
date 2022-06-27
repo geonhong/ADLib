@@ -22,7 +22,7 @@ void limitU(volVectorField& U, const solutionControl& control)
 
 		Uref *= neg(magUdiff) + pos(magUdiff)*limitMagU/(magUref + SMALL);
 
-		U.correctBoundaryConditions();
+		// U.correctBoundaryConditions();
 
 		scalar maxMagU(max(mag(U)).value());
 		reduce(maxMagU, maxOp<scalar>());

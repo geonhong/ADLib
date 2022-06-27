@@ -1,3 +1,6 @@
-scaledLinearRamp/scaledLinearRamp.C
+movingRMWallVelocityFvPatchVectorField/movingRMWallVelocityFvPatchVectorField.C
+
+RelativeMotion/RelativeMotion.C
+RelativeMotion/IORelativeMotion.C
 
 LIB = $(FOAM_USER_LIBBIN)/libADLib

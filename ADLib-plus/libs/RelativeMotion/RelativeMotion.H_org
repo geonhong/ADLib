@@ -55,7 +55,6 @@ SourceFiles
 #include "Function1.H"
 #include "autoPtr.H"
 #include "forces.H"
-//#include "forcesExt.H"
 #include "regIOobject.H"
 
 
@@ -185,10 +184,6 @@ class RelativeMotion
 			//- MRF dictionary
 			dictionary dict_;
 
-			const wordRes excludedPatchNames_;
-
-			labelList excludedPatchLabels_;
-
 			//- RelativeMotion region active flag
 			bool active_;
 
@@ -202,7 +197,7 @@ class RelativeMotion
 			vector velocity_;		// target velocity (velocity input)
 			List<vector> vList_;	// velocity list
 			List<scalar> tList_;	// time list
-			List<vector> pList_;	// position list
+			List<scalar> pList_;	// position list
 
 			//- Mass
 			scalar mass_;
