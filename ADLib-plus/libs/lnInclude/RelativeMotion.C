@@ -1,1 +1,1 @@
-../RelativeMotion/RelativeMotion.C
+../dynamicMesh/RelativeMotion/RelativeMotion.C

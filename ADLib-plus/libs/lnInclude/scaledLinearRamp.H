@@ -1,1 +1,1 @@
-../scaledLinearRamp/scaledLinearRamp.H
+../dynamicMesh/scaledLinearRamp/scaledLinearRamp.H

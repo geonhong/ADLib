@@ -1,1 +1,1 @@
-../movingRMWallVelocityFvPatchVectorField/movingRMWallVelocityFvPatchVectorField.C
+../dynamicMesh/movingRMWallVelocityFvPatchVectorField/movingRMWallVelocityFvPatchVectorField.C

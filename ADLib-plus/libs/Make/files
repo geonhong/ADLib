@@ -1,6 +1,8 @@
-movingRMWallVelocityFvPatchVectorField/movingRMWallVelocityFvPatchVectorField.C
+dynamicMesh/movingRMWallVelocityFvPatchVectorField/movingRMWallVelocityFvPatchVectorField.C
 
-RelativeMotion/RelativeMotion.C
-RelativeMotion/IORelativeMotion.C
+dynamicMesh/RelativeMotion/RelativeMotion.C
+dynamicMesh/RelativeMotion/IORelativeMotion.C
+
+functionObjects/fields/wallForces/wallForces.C
 
 LIB = $(FOAM_USER_LIBBIN)/libADLib
