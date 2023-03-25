@@ -4,5 +4,6 @@ dynamicMesh/RelativeMotion/RelativeMotion.C
 dynamicMesh/RelativeMotion/IORelativeMotion.C
 
 functionObjects/fields/wallForces/wallForces.C
+functionObjects/forces/forces.C
 
 LIB = $(FOAM_USER_LIBBIN)/libADLib
