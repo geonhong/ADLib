@@ -75,12 +75,16 @@ int main(int argc, char *argv[])
     #include "readFluxScheme.H"
 
     const dimensionedScalar v_zero(dimVolume/dimTime, Zero);
+    const dimensionedScalar T_min(dimTemperature, 1.0);
+    const dimensionedScalar T_max(dimTemperature, 2000.0);
 
     // Courant numbers used to adjust the time-step
     scalar CoNum = 0.0;
     scalar meanCoNum = 0.0;
 
     Info<< "\nStarting time loop\n" << endl;
+
+	scalar maxDeltaT0 = 0.0;
 
     while (runTime.run())
     {
@@ -222,6 +226,10 @@ int main(int argc, char *argv[])
 
         // --- Solve density
         solve(fvm::ddt(rho) + fvc::div(phi));
+		
+		//- Check density
+		Info<< "Density min/max: "
+			<< gMin(rho) << "/"	<< gMax(rho) << endl;
 
         // --- Solve momentum
         solve(fvm::ddt(rhoU) + fvc::div(phiUp));
@@ -261,13 +269,30 @@ int main(int argc, char *argv[])
           - fvc::div(sigmaDotU)
         );
 
+		/* --- Deprecated ---
+		 * Limiting temperature rather than rhoE
 		// limiting rhoE
-		const dimensionedScalar Tmin(dimTemperature, 10);
+		const dimensionedScalar Tmin(dimTemperature, 0);
+		Info<< "Limiting rhoE" << endl
+			<< "- Before: " << gMin(rhoE) << "/" << gMax(rhoE) << endl;
 		rhoE = max(rhoE, rho*(thermo.Cv()*Tmin + 0.5*magSqr(U)));
+		Info<< "- After : " << gMin(rhoE) << "/" << gMax(rhoE) << endl;
+		*/
 
         e = rhoE/rho - 0.5*magSqr(U);
         e.correctBoundaryConditions();
         thermo.correct();
+
+		// Check and limit temperature if necessary
+		volScalarField& T = thermo.T();
+		Info<< "min/max T: " << gMin(T) << "/" << gMax(T) << " K" << endl;
+
+		if (min(T)<T_min || max(T)>T_max)
+		{
+			T = min(max(T, T_min), T_max);
+			e = thermo.he(p, T);
+		}
+
         rhoE.boundaryFieldRef() ==
             rho.boundaryField()*
             (
