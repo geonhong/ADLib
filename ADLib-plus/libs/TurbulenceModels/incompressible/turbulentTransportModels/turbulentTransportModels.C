@@ -57,5 +57,8 @@ makeBaseTurbulenceModel
 #include "kOmegaPANS.H"
 makeRASModel(kOmegaPANS);
 
+#include "kOmegaSSTN.H"
+makeRASModel(kOmegaSSTN);
+
 
 // ************************************************************************* //

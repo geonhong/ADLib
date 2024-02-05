@@ -181,6 +181,18 @@ kOmegaPANS<BasicTurbulenceModel>::kOmegaPANS
         ),
         this->mesh_
     ),
+	Umean_
+	(
+	 	IOobject
+		(
+		 	"Umean",
+            this->runTime_.timeName(),
+            this->mesh_,
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+		),
+		this->U_
+	),
 	delta_
 	(
 	 	LESdelta::New
@@ -212,7 +224,7 @@ kOmegaPANS<BasicTurbulenceModel>::kOmegaPANS
             IOobject::NO_READ,
             IOobject::AUTO_WRITE
         ),
-		1.0/fk_
+		fk_
 	)
 {
     bound(k_, this->kMin_);
@@ -310,7 +322,7 @@ void kOmegaPANS<BasicTurbulenceModel>::correct()
      ==
         gamma_*alpha()*rho()*GbyNu
       - fvm::SuSp(((2.0/3.0)*gamma_)*alpha()*rho()*divU, omega_)
-      - fvm::Sp(beta_*alpha()*rho()*omega_(), omega_)
+      - fvm::Sp(betaPns*alpha()*rho()*omega_(), omega_)
       + fvOptions(alpha, rho, omega_)
 //	  + fvm::SuSp(DfwDt, omega_)
     );
@@ -322,6 +334,17 @@ void kOmegaPANS<BasicTurbulenceModel>::correct()
     fvOptions.correct(omega_);
 
     bound(omega_, this->omegaMin_);
+
+	// Evaluate material derivative of fk
+	// Update Umean
+	const Time& time = U.time();
+	const scalar dt = time.deltaTValue();
+	const scalar Dt = time.timeOutputValue() - time.startTime().value();
+	const scalar dtDt = dt/Dt;
+	Umean_ = (1.0-dtDt)*Umean_ + dtDt*U;
+
+	volVectorField Uprime(U - Umean_);
+	volScalarField kresolve(0.5*magSqr(Uprime));
 
 	volScalarField DfkDt
 	(
@@ -341,7 +364,7 @@ void kOmegaPANS<BasicTurbulenceModel>::correct()
       - fvm::SuSp((2.0/3.0)*alpha()*rho()*divU, k_)
       - fvm::Sp(betaStar_*alpha()*rho()*omega_(), k_)
       + fvOptions(alpha, rho, k_)
-	  + fvm::SuSp(DfkDt, k_)
+	  + DfkDt*kresolve
     );
 
     kEqn.ref().relax();

@@ -108,6 +108,8 @@ protected:
             volScalarField k_;
             volScalarField omega_;
 
+			volVectorField Umean_;
+
 			//- Run-time selectable delta model
 			autoPtr<Foam::LESdelta> delta_;
 

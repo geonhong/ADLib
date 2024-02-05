@@ -4,3 +4,4 @@ linux64*
 *.dep
 log
 *-dev
+*.swp
