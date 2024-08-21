@@ -15,6 +15,16 @@ else
     phiHbyA += MRF.zeroFilter(fvc::interpolate(rAU));
 }
 
+// Rhie-Chow interpolation
+volVectorField gradp(fvc::grad(p));
+surfaceVectorField gradPbar(fvc::interpolate(gradp));
+phiHbyA -= 
+	fvc::interpolate(rAU)*
+	(
+		(fvc::snGrad(p)*mesh.magSf())
+	  - (gradPbar & mesh.Sf())
+	);
+
 MRF.makeRelative(phiHbyA);
 
 if (p.needReference())
@@ -31,7 +41,7 @@ if (pimple.consistent())
     rAtU = 1.0/max(1.0/rAU - UEqn.H1(), 0.1/rAU);
     phiHbyA +=
         fvc::interpolate(rAtU() - rAU)*fvc::snGrad(p)*mesh.magSf();
-    HbyA -= (rAU - rAtU())*fvc::grad(p);
+    HbyA -= (rAU - rAtU())*gradp; // fvc::grad(p);
 }
 
 if (pimple.nCorrPISO() <= 1)

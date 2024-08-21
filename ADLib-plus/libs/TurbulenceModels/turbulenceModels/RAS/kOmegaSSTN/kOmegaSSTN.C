@@ -90,11 +90,31 @@ tmp<volScalarField> kOmegaSSTN<BasicTurbulenceModel>::F4
     {
 		const scalar CRC(1.4);
 
-    	const volScalarField S2(this->S2(gradU));
-    	const volScalarField W2(this->W2(gradU));
+    	const volScalarField S2
+		(
+		 	max
+			(
+			 	this->S2(gradU), 
+				dimensionedScalar("small", dimensionSet(0,0,-2,0,0), 1e-10)
+			)
+		);
+		// Limiting W2 not to exceed S2
+    	const volScalarField W2
+		(
+		 	min(this->W2(gradU), S2)
+		);
 
 		const volScalarField WbyS(sqrt(W2)/sqrt(S2));
 		const volScalarField Ri(WbyS*(WbyS-scalar(1)));
+
+		/*
+		Pout<< "max(WbyS): " << max(WbyS) 
+			<< "/min(WbyS): " << min(WbyS)
+			<< endl;
+		Pout<< "max(Ri): " << max(Ri) 
+			<< "/min(Ri): " << min(Ri)
+			<< endl;
+		*/
 		
 		f4.ref() /= (scalar(1)+CRC*Ri);
     }
