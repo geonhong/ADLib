@@ -161,6 +161,12 @@ protected:
             const volTensorField& gradU
 		) const;
 
+        //- Return square of strain rate with limiter applied
+		virtual tmp<volScalarField> S2
+		(
+		 	const volTensorField& gradU
+		) const;
+
         //- Return square of rotation rate
         virtual tmp<volScalarField> W2
         (

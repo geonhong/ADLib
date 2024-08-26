@@ -123,6 +123,15 @@ tmp<volScalarField> kOmegaSSTN<BasicTurbulenceModel>::F4
 }
 
 template<class BasicTurbulenceModel>
+Foam::tmp<Foam::volScalarField> kOmegaSSTN<BasicTurbulenceModel>::S2
+(
+    const volTensorField& gradU
+) const
+{
+    return 2*magSqr(symm(gradU));
+}
+
+template<class BasicTurbulenceModel>
 Foam::tmp<Foam::volScalarField> kOmegaSSTN<BasicTurbulenceModel>::W2
 (
     const volTensorField& gradU
@@ -134,8 +143,13 @@ Foam::tmp<Foam::volScalarField> kOmegaSSTN<BasicTurbulenceModel>::W2
 template<class BasicTurbulenceModel>
 void kOmegaSSTN<BasicTurbulenceModel>::correctNut(const volScalarField& S2)
 {
-    // Correct the turbulence viscosity
-    this->nut_ = this->a1_*this->k_/max(this->a1_*this->omega_, this->b1_*this->F23()*sqrt(S2));
+    // Correct the turbulence viscosity and apply limiter
+    this->nut_ = 
+	min
+	(
+		this->a1_*this->k_/max(this->a1_*this->omega_, this->b1_*this->F23()*sqrt(S2)),
+		1e5*this->nu()
+	);
     this->nut_.correctBoundaryConditions();
     fv::options::New(this->mesh_).correct(this->nut_);
 
@@ -247,11 +261,17 @@ void kOmegaSSTN<BasicTurbulenceModel>::correct()
         fvc::div(fvc::absolute(this->phi(), U))
     );
 
+	volScalarField Pklim(10*this->betaStar_*this->k_*this->omega_);
+
     tmp<volTensorField> tgradU = fvc::grad(U);
     const volScalarField S2(this->S2(tgradU()));
     volScalarField::Internal GbyNu0(this->GbyNu0(tgradU(), S2));
-    volScalarField::Internal G(this->GName(), nut*GbyNu0);
-
+    volScalarField::Internal G
+	(
+	 	this->GName(), 
+		// Applying production limiter
+		min(nut*GbyNu0, Pklim.internalField())
+	);
 
     // - boundary condition changes a cell value
     // - normally this would be triggered through correctBoundaryConditions
@@ -345,6 +365,9 @@ void kOmegaSSTN<BasicTurbulenceModel>::correct()
         fvOptions.constrain(kEqn.ref());
         solve(kEqn);
         fvOptions.correct(this->k_);
+
+		// Bound TKE using upper limit (100% TI)
+		this->k_ = min(this->k_, 1.5*magSqr(this->U_));
         bound(this->k_, this->kMin_);
     }
 
